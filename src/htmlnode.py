@@ -27,6 +27,7 @@ class HTMLNode():
 		prop_print = self.props_to_html()
 		if(prop_print == ""): prop_print = None
 		return f"HTMLNode(\n{self.tag}, \n{self.value}, \n{child_print}, \n{prop_print}, \n)"
+		
 
 class LeafNode(HTMLNode):
 	def __init__(self, tag, value, props=None):
@@ -39,3 +40,20 @@ class LeafNode(HTMLNode):
 			return self.value
 		else:
 			return "<" + self.tag + self.props_to_html() + ">" + self.value + "</" + self.tag + ">"
+
+class ParentNode(HTMLNode):
+	def __init__(self, tag, children, props=None):
+		super().__init__(tag, None, children, props)
+	
+	def to_html(self):
+		if not self.tag:
+			raise ValueError("Parent node must have a tag")
+		if not self.children or len(self.children) < 1:
+			raise ValueError("Parent node must have children")
+		else:
+			to_return = "<" + self.tag + ">"
+			for child in self.children:
+				to_return += child.to_html()
+			to_return += "</" + self.tag + ">"
+			return to_return
+
